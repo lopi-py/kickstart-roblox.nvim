@@ -90,7 +90,7 @@ end
 require("lazy").setup {
   -- Tool manager for external tools like LSP's, linters, formatters, etc
   --
-  -- To check the current status of your tools , run `:Mason`
+  -- To check the current status of your tools, run `:Mason`
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     opts = {
