@@ -307,7 +307,7 @@ require("lazy").setup {
               -- Select next item if the completion menu is visible
               cmp.select_next_item()
             elseif vim.snippet.jumpable(1) then
-              -- Jump the the next snippet location if exists
+              -- Jump the the next snippet location if possible
               vim.snippet.jump(1)
             else
               fallback()
@@ -315,10 +315,10 @@ require("lazy").setup {
           end, { "i", "s" }),
           ["<s-tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              -- Select next item if the completion menu is visible
+              -- Select previous item if the completion menu is visible
               cmp.select_prev_item()
             elseif vim.snippet.jumpable(-1) then
-              -- Jump the the next snippet location if exists
+              -- Jump the the previous snippet location if possible
               vim.snippet.jump(-1)
             else
               fallback()
@@ -334,7 +334,7 @@ require("lazy").setup {
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
 
-      -- Snippet loader, by default it will load snippets in NEOVIM_CONFIG/snippets/*.json
+      -- Snippet loader, by default it will load snippets in `NVIM_CONFIG/snippets/*.json`
       -- See https://github.com/garymjr/nvim-snippets
       { "garymjr/nvim-snippets", opts = {} },
     },
