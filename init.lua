@@ -268,6 +268,7 @@ require("lazy").setup {
     "stevearc/conform.nvim",
     event = { "BufWritePre" },
     keys = {
+      -- Format code
       {
         "<leader>f",
         function()
@@ -337,6 +338,23 @@ require("lazy").setup {
       -- Snippet loader, by default it will load snippets in `NVIM_CONFIG/snippets/*.json`
       -- See https://github.com/garymjr/nvim-snippets
       { "garymjr/nvim-snippets", opts = {} },
+    },
+  },
+
+  -- Fuzzy finder
+  {
+    "nvim-telescope/telescope.nvim",
+    keys = {
+      -- Search files
+      { "<leader>sf", ":Telescope find_files<cr>" },
+      -- Search by grep
+      { "<leader>sg", ":Telescope live_grep<cr>" },
+      -- Search buffers
+      { "<leader><leader>", ":Telescope buffers<cr>" },
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
     },
   },
 
