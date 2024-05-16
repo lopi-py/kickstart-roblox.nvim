@@ -60,11 +60,9 @@ local function get_capabilities()
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
-  -- Enable manually file watcher capability in Neovim 0.9 so luau-lsp will be aware of sourcemap.json changes, this
-  -- is not needed on Neovim 0.10+ as it is done internally
-  if vim.version().minor < 10 then
-    capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
-  end
+  -- Enable manually file watcher capability, so luau-lsp will be aware of sourcemap.json changes, this
+  -- is done internally in Neovim 0.10+, but only for non Linux systems
+  capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
 end
 
 local function get_json_schemas()
@@ -294,6 +292,11 @@ require("lazy").setup {
     config = function()
       local cmp = require "cmp"
 
+      -- stop the current snippet when leaving insert mode
+      vim.api.nvim_create_autocmd("InsertLeave", {
+        callback = vim.snippet.stop,
+      })
+
       cmp.setup {
         snippet = {
           expand = function(args)
@@ -307,7 +310,7 @@ require("lazy").setup {
             if cmp.visible() then
               -- Select the next item if the completion menu is visible
               cmp.select_next_item()
-            elseif vim.snippet.jumpable(1) then
+            elseif vim.snippet.active { direction = 1 } then
               -- Jump to the next snippet location if possible
               vim.snippet.jump(1)
             else
@@ -318,7 +321,7 @@ require("lazy").setup {
             if cmp.visible() then
               -- Select the previous item if the completion menu is visible
               cmp.select_prev_item()
-            elseif vim.snippet.jumpable(-1) then
+            elseif vim.snippet.active { direction = -1 } then
               -- Jump to the previous snippet location if possible
               vim.snippet.jump(-1)
             else
