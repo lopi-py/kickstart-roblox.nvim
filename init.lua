@@ -93,6 +93,7 @@ require("lazy").setup {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     opts = {
       ensure_installed = {
+        "lua-language-server",
         "luau-lsp",
         "stylua",
 
@@ -173,6 +174,11 @@ require("lazy").setup {
         end,
       })
 
+      -- Setup lua-ls for your neovim config
+      require("lspconfig").lua_ls.setup {
+        capabilities = get_capabilities(),
+      }
+
       -- Setup eslint for `typescript` files
       require("lspconfig").eslint.setup {
         capabilities = get_capabilities(),
@@ -205,6 +211,10 @@ require("lazy").setup {
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
       "b0o/SchemaStore.nvim",
+
+      -- Configures Lua LS for your Neovim config, runtime and plugins
+      -- used for completion, annotations and signatures of Neovim apis
+      { "folke/neodev.nvim", opts = {} },
     },
   },
 
@@ -395,6 +405,7 @@ require("lazy").setup {
     main = "nvim-treesitter.configs",
     opts = {
       ensure_installed = {
+        "lua",
         "luau",
 
         "typescript",
