@@ -41,18 +41,37 @@ vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)
 -- Open diagnostic quickfix list
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist)
 
+-- [[ Luau filetype detection ]]
+-- Automatically recognise .lua as luau files in a Roblox project
+local cwd = assert(vim.uv.cwd())
+local rojo_file_found = vim.fs.root(cwd, function(name)
+  return name:match "%.project.json$"
+end)
+
+if rojo_file_found then
+  vim.filetype.add {
+    extension = {
+      lua = function(path)
+        return path:match ".nvim.lua$" and "lua" or "luau"
+      end,
+    },
+  }
+end
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 -- See https://github.com/folke/lazy.nvim
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system {
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  }
+if not vim.uv.fs_stat(lazypath) then
+  vim
+    .system({
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "https://github.com/folke/lazy.nvim.git",
+      "--branch=stable",
+      lazypath,
+    })
+    :wait()
 end
 vim.opt.runtimepath:prepend(lazypath)
 
