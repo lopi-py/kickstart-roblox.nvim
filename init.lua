@@ -321,17 +321,7 @@ require("lazy").setup {
     config = function()
       local cmp = require "cmp"
 
-      -- stop the current snippet when leaving insert mode
-      vim.api.nvim_create_autocmd("InsertLeave", {
-        callback = vim.snippet.stop,
-      })
-
       cmp.setup {
-        snippet = {
-          expand = function(args)
-            vim.snippet.expand(args.body)
-          end,
-        },
         mapping = {
           -- Accept the completion
           ["<cr>"] = cmp.mapping.confirm { select = true },
