@@ -31,7 +31,7 @@ Starting point for your Neovim configuration for Roblox. This is **NOT** a Neovi
 
 ### I do not have a config (first time using Neovim)
 
-Donwload [init.lua](https://github.com/lopi-py/kickstart-roblox.nvim/blob/main/init.lua) and place it into your Neovim config
+Download [init.lua](https://github.com/lopi-py/kickstart-roblox.nvim/blob/main/init.lua) and place it into your Neovim config
 
 <details>
 
@@ -92,3 +92,10 @@ nvim -u $env:USERPROFILE\Downloads\kickstart-roblox.lua
 ```
 
 </details>
+
+## Getting Started
+
+Here are some essential key mappings to help you navigate and search through your files efficiently:
+- `<space>sf`: Search files - Quickly find and open files within the project.
+- `<space>sg`: Search by grep - Perform a text search within your project files using grep.
+- `<space><space>`: List opened buffers - View and switch between currently opened buffers.
