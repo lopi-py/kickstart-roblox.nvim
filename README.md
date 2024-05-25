@@ -75,7 +75,7 @@ nvim
 curl https://raw.githubusercontent.com/lopi-py/kickstart-roblox.nvim/main/init.lua -o /tmp/kickstart-roblox.lua
 
 # start Neovim in your project folder
-nvim -u /tmp/kickstart-roblox.lua src/client/init.client.luau
+nvim -u /tmp/kickstart-roblox.lua
 ```
 
 </details>
@@ -88,7 +88,7 @@ nvim -u /tmp/kickstart-roblox.lua src/client/init.client.luau
 curl https://raw.githubusercontent.com/lopi-py/kickstart-roblox.nvim/main/init.lua -o $env:USERPROFILE\Downloads\kickstart-roblox.lua
 
 # start Neovim in your project folder
-nvim -u $env:USERPROFILE\Downloads\kickstart-roblox.lua src/client/init.luau
+nvim -u $env:USERPROFILE\Downloads\kickstart-roblox.lua
 ```
 
 </details>
