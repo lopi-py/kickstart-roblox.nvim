@@ -1,6 +1,6 @@
 # kickstart-roblox.nvim
 
-Starting point for your Neovim configuration for Roblox. **This** is not a Neovim distro.
+Starting point for your Neovim configuration for Roblox. This is **NOT** a Neovim distro.
 
 ## Requirements
 
@@ -10,6 +10,7 @@ Starting point for your Neovim configuration for Roblox. **This** is not a Neovi
 
 ## Features
 
+- Single and small configuration file
 - Detailed comments to understand the configuration
 - Support for editing your Neovim config
 - Support for Roblox lua/luau projects
