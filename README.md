@@ -27,7 +27,7 @@ Starting point for your Neovim configuration for Roblox. This is **NOT** a Neovi
 - Fuzzy file finder
 - Syntax highlight
 
-## Install
+## Installation
 
 ### I do not have a config (first time using Neovim)
 
