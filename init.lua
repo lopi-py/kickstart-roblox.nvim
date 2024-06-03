@@ -156,22 +156,24 @@ require("lazy").setup {
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(event)
           -- Create a helper function to set the buffer specific keymaps
-          local function map(lhs, rhs)
-            vim.keymap.set("n", lhs, rhs, { buffer = event.buf })
+          local function map(mode, lhs, rhs)
+            vim.keymap.set(mode, lhs, rhs, { buffer = event.buf })
           end
 
           -- Go to definition
-          map("gd", vim.lsp.buf.definition)
+          map("n", "gd", vim.lsp.buf.definition)
           -- Go to declaration
-          map("gD", vim.lsp.buf.declaration)
+          map("n", "gD", vim.lsp.buf.declaration)
           -- Find references
-          map("gr", vim.lsp.buf.references)
+          map("n", "gr", vim.lsp.buf.references)
           -- Rename symbol
-          map("<leader>rn", vim.lsp.buf.rename)
+          map("n", "<leader>rn", vim.lsp.buf.rename)
           -- Code action
-          map("<leader>ca", vim.lsp.buf.code_action)
+          map("n", "<leader>ca", vim.lsp.buf.code_action)
           -- Hover
-          map("K", vim.lsp.buf.hover)
+          map("n", "K", vim.lsp.buf.hover)
+          -- Signature help
+          map("i", "<c-s>", vim.lsp.buf.signature_help)
 
           local client = vim.lsp.get_client_by_id(event.data.client_id)
           if not client then
@@ -305,6 +307,7 @@ require("lazy").setup {
     },
     opts = {
       formatters_by_ft = {
+        lua = { "stylua" },
         luau = { "stylua" },
         typescript = { "prettierd" },
         typescriptreact = { "prettierd" },
