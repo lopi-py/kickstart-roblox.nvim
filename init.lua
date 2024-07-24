@@ -116,7 +116,7 @@ require("lazy").setup {
         "luau-lsp",
         "stylua",
 
-        "typescript-language-server",
+        "vtsls",
         "eslint-lsp",
         "prettierd",
 
@@ -216,6 +216,11 @@ require("lazy").setup {
         },
       }
 
+      -- Setup vtsls for `typescript` files
+      require("lspconfig").vtsls.setup {
+        capabilities = get_capabilities(),
+      }
+
       -- Setup yamlls for `yaml` files
       require("lspconfig").yamlls.setup {
         capabilities = get_capabilities(),
@@ -259,29 +264,10 @@ require("lazy").setup {
               completion = {
                 imports = {
                   enabled = true,
+                  ignoreGlobs = { "**/_Index/**", "**/node_modules/**" },
                 },
               },
             },
-          },
-        },
-      }
-    end,
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "neovim/nvim-lspconfig",
-    },
-  },
-
-  -- Typescript support
-  {
-    "pmizio/typescript-tools.nvim",
-    config = function()
-      -- See https://github.com/pmizio/typescript-tools.nvim
-      require("typescript-tools").setup {
-        capabilities = get_capabilities(),
-        settings = {
-          jsx_close_tag = {
-            enable = true,
           },
         },
       }
