@@ -287,7 +287,7 @@ require("lazy").setup {
       {
         "<leader>f",
         function()
-          require("conform").format { async = true, lsp_fallback = true }
+          require("conform").format { async = true, lsp_format = "fallback" }
         end,
       },
     },
@@ -299,7 +299,7 @@ require("lazy").setup {
         typescriptreact = { "prettierd" },
       },
       format_on_save = {
-        lsp_fallback = true,
+        lsp_format = "fallback",
       },
     },
   },
@@ -424,7 +424,7 @@ require("lazy").setup {
   },
 
   -- Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going
-  -- See https://github.com/folke/lazy.nvim?tab=readme-ov-file#-structuring-your-plugins
+  -- See https://lazy.folke.io/usage/structuring
   --
   -- { import = "custom.plugins" },
 }
