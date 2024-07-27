@@ -119,10 +119,7 @@ require("lazy").setup {
         "vtsls",
         "eslint-lsp",
         "prettierd",
-
         "json-lsp",
-        "yaml-language-server",
-        "taplo",
       },
     },
     dependencies = {
@@ -222,18 +219,7 @@ require("lazy").setup {
         capabilities = get_capabilities(),
       }
 
-      -- Setup yamlls for `yaml` files
-      require("lspconfig").yamlls.setup {
-        capabilities = get_capabilities(),
-      }
-
-      -- Setup taplo for `toml` files
-      require("lspconfig").taplo.setup {
-        capabilities = get_capabilities(),
-      }
-
-      -- We don't need to call `require("lspconfig").luau_lsp.setup` and `require("lspconfig").tsserver.setup` because
-      -- we are using plugins for those
+      -- We don't need to call `require("lspconfig").luau_lsp.setup` because we are using luau-lsp.nvim
     end,
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
