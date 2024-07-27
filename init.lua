@@ -89,7 +89,7 @@ local function get_json_schemas()
 
   -- Add the rojo json schema for rojo project files
   table.insert(schemas, {
-    fileMatch = "*.project.json",
+    fileMatch = { "*.project.json" },
     url = "https://raw.githubusercontent.com/rojo-rbx/vscode-rojo/master/schemas/project.template.schema.json",
   })
 
@@ -287,7 +287,7 @@ require("lazy").setup {
       {
         "<leader>f",
         function()
-          require("conform").format { async = true, lsp_format = "fallback" }
+          require("conform").format { async = true }
         end,
       },
     },
@@ -298,8 +298,11 @@ require("lazy").setup {
         typescript = { "prettierd" },
         typescriptreact = { "prettierd" },
       },
-      format_on_save = {
+      default_format_opts = {
         lsp_format = "fallback",
+      },
+      format_on_save = {
+        timeout_ms = 500,
       },
     },
   },
