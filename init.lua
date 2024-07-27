@@ -212,6 +212,7 @@ require("lazy").setup {
           json = {
             -- Send custom json schemas to jsonls to provide its features when you open a json file
             schemas = get_json_schemas(),
+            validate = { enable = true },
           },
         },
       }
