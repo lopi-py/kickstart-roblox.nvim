@@ -368,7 +368,7 @@ require("lazy").setup {
   -- Set tabstop and shifwidth when opening a file
   -- See `:help 'tabstop'` and `:help 'shifwidth'`
   {
-    "Darazaki/indent-o-matic",
+    "NMAC427/guess-indent.nvim",
     opts = {},
   },
 
