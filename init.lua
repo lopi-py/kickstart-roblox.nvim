@@ -227,7 +227,18 @@ require("lazy").setup {
 
       -- Configures Lua LS for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
-      { "folke/neodev.nvim", opts = {} },
+      {
+        "folke/lazydev.nvim",
+        opts = {
+          library = {
+            -- Load luvit types when the `vim.uv` word is found
+            { path = "luvit-meta/library", words = { "vim%.uv" } },
+          },
+        },
+        dependencies = {
+          "Bilal2453/luvit-meta", -- optional `vim.uv` typings
+        },
+      },
     },
   },
 
@@ -327,10 +338,12 @@ require("lazy").setup {
             end
           end, { "i", "s" }),
         },
-        sources = {
+        sources = cmp.config.sources({
+          { name = "lazydev" },
+        }, {
           { name = "nvim_lsp" },
           { name = "snippets" },
-        },
+        }),
       }
     end,
     dependencies = {
