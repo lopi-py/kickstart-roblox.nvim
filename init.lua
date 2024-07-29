@@ -82,6 +82,8 @@ local function get_capabilities()
   -- Enable manually file watcher capability, so luau-lsp will be aware of sourcemap.json changes, this
   -- is done internally in Neovim 0.10+, but only for non Linux systems
   capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
+
+  return capabilities
 end
 
 local function get_json_schemas()
