@@ -274,7 +274,6 @@ require("lazy").setup {
     end,
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "neovim/nvim-lspconfig",
     },
   },
 
