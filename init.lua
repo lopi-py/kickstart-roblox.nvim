@@ -41,14 +41,15 @@ vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)
 -- Open diagnostic quickfix list
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist)
 
+local function rojo_project()
+  return vim.fs.root(0, function(name)
+    return name:match "%.project.json$"
+  end)
+end
+
 -- [[ Luau filetype detection ]]
 -- Automatically recognise .lua as luau files in a Roblox project
-local cwd = assert(vim.uv.cwd())
-local rojo_file_found = vim.fs.root(cwd, function(name)
-  return name:match "%.project.json$"
-end)
-
-if rojo_file_found then
+if rojo_project() then
   vim.filetype.add {
     extension = {
       lua = function(path)
@@ -253,6 +254,9 @@ require("lazy").setup {
       --
       -- See https://github.com/lopi-py/luau-lsp.nvim
       require("luau-lsp").setup {
+        platform = {
+          type = rojo_project() and "roblox" or "standard",
+        },
         plugin = {
           enabled = true,
         },
@@ -266,6 +270,12 @@ require("lazy").setup {
                   enabled = true,
                   ignoreGlobs = { "**/_Index/**", "**/node_modules/**" },
                 },
+              },
+              require = {
+                mode = "relativeToFile",
+                -- luau-lsp does not yet support .luaurc aliases, but we can use a helper function included in
+                -- luau-lsp.nvim
+                directoryAliases = require("luau-lsp").aliases(),
               },
             },
           },
