@@ -43,7 +43,7 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist)
 
 local function rojo_project()
   return vim.fs.root(0, function(name)
-    return name:match "%.project.json$"
+    return name:match ".+%.project%.json$"
   end)
 end
 
@@ -53,7 +53,7 @@ if rojo_project() then
   vim.filetype.add {
     extension = {
       lua = function(path)
-        return path:match ".nvim.lua$" and "lua" or "luau"
+        return path:match "%.nvim%.lua$" and "lua" or "luau"
       end,
     },
   }
@@ -264,11 +264,11 @@ require("lazy").setup {
           capabilities = get_capabilities(),
           settings = {
             ["luau-lsp"] = {
-              ignoreGlobs = { "**/_Index/**", "**/node_modules/**" },
+              ignoreGlobs = { "**/_Index/**", "node_modules/**" },
               completion = {
                 imports = {
                   enabled = true,
-                  ignoreGlobs = { "**/_Index/**", "**/node_modules/**" },
+                  ignoreGlobs = { "**/_Index/**", "node_modules/**" },
                 },
               },
               require = {
