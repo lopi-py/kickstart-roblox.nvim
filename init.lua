@@ -272,7 +272,6 @@ require("lazy").setup {
                 },
               },
               require = {
-                mode = "relativeToFile",
                 -- luau-lsp does not yet support .luaurc aliases, but we can use a helper function included in
                 -- luau-lsp.nvim
                 directoryAliases = require("luau-lsp").aliases(),
