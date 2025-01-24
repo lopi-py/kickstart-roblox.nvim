@@ -235,11 +235,8 @@ require("lazy").setup {
         opts = {
           library = {
             -- Load luvit types when the `vim.uv` word is found
-            { path = "luvit-meta/library", words = { "vim%.uv" } },
+            { path = "${3rd}/luv/library", words = { "vim%.uv" } },
           },
-        },
-        dependencies = {
-          "Bilal2453/luvit-meta", -- optional `vim.uv` typings
         },
       },
     },
@@ -270,11 +267,6 @@ require("lazy").setup {
                   enabled = true,
                   ignoreGlobs = { "**/_Index/**", "node_modules/**" },
                 },
-              },
-              require = {
-                -- luau-lsp does not yet support .luaurc aliases, but we can use a helper function included in
-                -- luau-lsp.nvim
-                directoryAliases = require("luau-lsp").aliases(),
               },
             },
           },
