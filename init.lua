@@ -32,15 +32,13 @@ vim.opt.cursorline = true
 -- [[ Basic keymaps ]]
 -- See `:help vim.keymap`
 
--- Go to next diagnostic
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
--- Go to previous diagnostic
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
--- Show diagnostic under the cursor
-vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)
+-- Clear highlights on search
+vim.keymap.set("n", "<esc>", "<cmd>nohlsearch<cr>")
+
 -- Open diagnostic quickfix list
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist)
 
+-- Detects if we open a Rojo project
 local function rojo_project()
   return vim.fs.root(0, function(name)
     return name:match ".+%.project%.json$"
@@ -76,17 +74,6 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.runtimepath:prepend(lazypath)
 
-local function get_capabilities()
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
-
-  -- Enable manually file watcher capability, so luau-lsp will be aware of sourcemap.json changes, this
-  -- is done internally in Neovim 0.10+, but only for non Linux systems
-  capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
-
-  return capabilities
-end
-
 local function get_json_schemas()
   local schemas = require("schemastore").json.schemas()
 
@@ -118,7 +105,6 @@ require("lazy").setup {
         "lua-language-server",
         "luau-lsp",
         "stylua",
-
         "vtsls",
         "eslint-lsp",
         "prettierd",
@@ -135,9 +121,18 @@ require("lazy").setup {
   },
 
   -- Git integration
+  -- Adds git related signs to the gutter
   {
     "lewis6991/gitsigns.nvim",
-    opts = {},
+    opts = {
+      signs = {
+        add = { text = "+" },
+        change = { text = "~" },
+        delete = { text = "_" },
+        topdelete = { text = "‾" },
+        changedelete = { text = "~" },
+      },
+    },
   },
 
   -- LSP configuration
@@ -160,20 +155,14 @@ require("lazy").setup {
             vim.keymap.set(mode, lhs, rhs, { buffer = event.buf })
           end
 
+          -- There are already some default keymaps provided by Neovim, see:
+          -- `:help lsp-defaults`
+          -- `:help diagnostics-defaults`
+
           -- Go to definition
           map("n", "gd", vim.lsp.buf.definition)
           -- Go to declaration
           map("n", "gD", vim.lsp.buf.declaration)
-          -- Find references
-          map("n", "gr", vim.lsp.buf.references)
-          -- Rename symbol
-          map("n", "<leader>rn", vim.lsp.buf.rename)
-          -- Code action
-          map("n", "<leader>ca", vim.lsp.buf.code_action)
-          -- Hover
-          map("n", "K", vim.lsp.buf.hover)
-          -- Signature help
-          map("i", "<c-s>", vim.lsp.buf.signature_help)
 
           local client = vim.lsp.get_client_by_id(event.data.client_id)
           if not client then
@@ -181,7 +170,7 @@ require("lazy").setup {
           end
 
           -- Highlight the current word under the cursor
-          if client.supports_method "textDocument/documentHighlight" then
+          if client:supports_method "textDocument/documentHighlight" then
             vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
               buffer = event.buf,
               callback = vim.lsp.buf.document_highlight,
@@ -195,19 +184,8 @@ require("lazy").setup {
         end,
       })
 
-      -- Setup lua-ls for your neovim config
-      require("lspconfig").lua_ls.setup {
-        capabilities = get_capabilities(),
-      }
-
-      -- Setup eslint for `typescript` files
-      require("lspconfig").eslint.setup {
-        capabilities = get_capabilities(),
-      }
-
-      -- Setup jsonls for `json` files
-      require("lspconfig").jsonls.setup {
-        capabilities = get_capabilities(),
+      -- Configure lsp's with `vim.lsp.config`, see `:help vim.lsp.config`
+      vim.lsp.config("jsonls", {
         settings = {
           json = {
             -- Send custom json schemas to jsonls to provide its features when you open a json file
@@ -215,17 +193,19 @@ require("lazy").setup {
             validate = { enable = true },
           },
         },
-      }
+      })
 
-      -- Setup vtsls for `typescript` files
-      require("lspconfig").vtsls.setup {
-        capabilities = get_capabilities(),
+      -- Enable the specified lsp's, see `:help vim.lsp.enable`
+      --
+      -- We don't need to enable `luau_lsp` because we are using luau-lsp.nvim
+      vim.lsp.enable {
+        "lua_ls",
+        "eslint",
+        "jsonls",
+        "vtsls",
       }
-
-      -- We don't need to call `require("lspconfig").luau_lsp.setup` because we are using luau-lsp.nvim
     end,
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
       "b0o/SchemaStore.nvim",
 
       -- Configures Lua LS for your Neovim config, runtime and plugins
@@ -246,8 +226,23 @@ require("lazy").setup {
   {
     "lopi-py/luau-lsp.nvim",
     config = function()
-      -- We call `require("luau-lsp").setup` instead of `require("lspconfig").luau_lsp.setup` because luau-lsp.nvim will
-      -- add extra features to luau-lsp, so we don't need to call lspconfig's setup
+      -- Configure *server* settings
+      vim.lsp.config("luau-lsp", {
+        settings = {
+          ["luau-lsp"] = {
+            ignoreGlobs = { "**/_Index/**", "node_modules/**" },
+            completion = {
+              imports = {
+                enabled = true,
+                ignoreGlobs = { "**/_Index/**", "node_modules/**" },
+              },
+            },
+          },
+        },
+      })
+
+      -- We call `require("luau-lsp").setup` instead of `vim.lsp.enable("luau_lsp")` because luau-lsp.nvim will
+      -- add extra features to luau-lsp, so we don't need to call the native lsp setup
       --
       -- See https://github.com/lopi-py/luau-lsp.nvim
       require("luau-lsp").setup {
@@ -256,20 +251,6 @@ require("lazy").setup {
         },
         plugin = {
           enabled = true,
-        },
-        server = {
-          capabilities = get_capabilities(),
-          settings = {
-            ["luau-lsp"] = {
-              ignoreGlobs = { "**/_Index/**", "node_modules/**" },
-              completion = {
-                imports = {
-                  enabled = true,
-                  ignoreGlobs = { "**/_Index/**", "node_modules/**" },
-                },
-              },
-            },
-          },
         },
       }
     end,
@@ -309,51 +290,34 @@ require("lazy").setup {
 
   -- Autocompletion
   {
-    "hrsh7th/nvim-cmp",
-    config = function()
-      local cmp = require "cmp"
-
-      cmp.setup {
-        mapping = {
-          -- Accept the completion
-          ["<cr>"] = cmp.mapping.confirm { select = true },
-          ["<tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              -- Select the next item if the completion menu is visible
-              cmp.select_next_item()
-            elseif vim.snippet.active { direction = 1 } then
-              -- Jump to the next snippet location if possible
-              vim.snippet.jump(1)
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<s-tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              -- Select the previous item if the completion menu is visible
-              cmp.select_prev_item()
-            elseif vim.snippet.active { direction = -1 } then
-              -- Jump to the previous snippet location if possible
-              vim.snippet.jump(-1)
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
+    "Saghen/blink.cmp",
+    version = "*",
+    opts = {
+      keymap = {
+        -- 'default' (recommended) for mappings similar to built-in completions
+        --   <c-y> to accept ([y]es) the completion.
+        --    This will auto-import if your LSP supports it.
+        --    This will expand snippets if the LSP sent a snippet.
+        --
+        -- For an understanding of why the 'default' preset is recommended,
+        -- you will need to read `:help ins-completion`
+        --
+        -- For more information about presets,
+        -- see https://cmp.saghen.dev/configuration/keymap.html#presets
+        preset = "default",
+      },
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer", "lazydev" },
+        providers = {
+          lazydev = {
+            module = "lazydev.integrations.blink",
+            fallbacks = { "lsp" },
+          },
         },
-        sources = cmp.config.sources({
-          { name = "lazydev" },
-        }, {
-          { name = "nvim_lsp" },
-          { name = "snippets" },
-        }),
-      }
-    end,
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-
-      -- Snippet loader, by default it will load snippets in `NVIM_CONFIG/snippets/*.json`
-      -- See https://github.com/garymjr/nvim-snippets
-      { "garymjr/nvim-snippets", opts = {} },
+      },
+      cmdline = {
+        enabled = false,
+      },
     },
   },
 

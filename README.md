@@ -4,8 +4,8 @@ Starting point for your Neovim configuration for Roblox. This is **NOT** a Neovi
 
 ## Requirements
 
-- Neovim 0.10+
-- A C++ compiler (gcc, g++, clang, etc)
+- Neovim 0.11+
+- A C compiler (gcc, g++, clang, etc)
 - A [nerd font](https://www.nerdfonts.com/) (optional)
 
 ## Features
